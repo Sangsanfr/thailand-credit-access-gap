@@ -1,0 +1,18 @@
+# Shapefiles from OCHA/HDX are larger than GitHub's 100 MB file limit.
+# Download them yourself (see data/raw/D7/README.md).
+data/raw/D7/shp/
+
+# Intermediate files that the pipeline rebuilds
+d2_xlsx/
+processed/district_monthly_D2_D1.csv
+processed/geo/_adm2_cache.pkl
+dashboard/data/
+
+# Python / OS
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*

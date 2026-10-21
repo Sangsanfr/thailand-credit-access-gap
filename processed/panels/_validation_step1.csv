@@ -1,0 +1,9 @@
+﻿check,result
+district_panel sum vs province (dep_dec): province-years off by >0.1%,2
+district_panel sum vs province (loan_dec): province-years off by >0.1%,1
+district_panel sum vs province (population): province-years off by >0.1%,0
+"province_panel (incl HQ) == national total, max abs diff",6.0
+"province_panel population == DOPA national, max abs diff",0.0
+rest units clipped at 0 (count),1
+province-years in harmonised panel,1596
+district_panel rows / visible districts / rest units,6861 / 5320 / 1541

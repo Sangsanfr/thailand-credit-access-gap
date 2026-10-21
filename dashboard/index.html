@@ -1,0 +1,302 @@
+<style>
+  .cg { font-family: var(--font-anthropic-sans); display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+  .cg-head { display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
+  .cg-eyebrow { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); letter-spacing: .02em; }
+  .cg-tabs { display: flex; gap: var(--cds-gap-xs); border-bottom: 1px solid var(--color-border-line); flex-wrap: wrap; }
+  .cg-tab { font: inherit; font-size: var(--cds-font-size-body); background: none; border: 0; border-bottom: 2px solid transparent;
+    padding: var(--cds-pad-sm) var(--cds-pad-md); color: var(--color-fg-muted); cursor: pointer; margin-bottom: -1px; }
+  .cg-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+  .cg-tab:focus-visible, .cg-segs button:focus-visible, .cg th:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+  .cg-page { display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+  .cg-takeaway { font-size: var(--cds-font-size-heading); line-height: 1.55; max-width: 62rem; margin: 0; text-wrap: pretty; }
+  .cg-takeaway b, .cg-tile b { font-weight: var(--cds-font-weight-medium); }
+  .cg-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: var(--cds-gap-md); }
+  .cg-tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius);
+    padding: var(--cds-pad-md) var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-xs); min-width: 0; }
+  .cg-tile-k { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .cg-big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); line-height: 1.15;
+    font-variant-numeric: tabular-nums; }
+  .cg-sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .cg-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--cds-gap-md); }
+  .cg-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius);
+    padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); position: relative; min-width: 0; }
+  .cg-card h3 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); text-wrap: balance; }
+  .cg-note { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.5; }
+  .cg-explain { margin: 0; padding: var(--cds-pad-sm) var(--cds-pad-md); list-style: none; display: flex; flex-direction: column; gap: 4px;
+    background: color-mix(in srgb, var(--color-fg) 4%, transparent); border-radius: var(--cds-radius); font-size: var(--cds-font-size-caption); line-height: 1.55; }
+  .cg-explain b { font-weight: var(--cds-font-weight-medium); }
+  .cg-controls { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); align-items: center; }
+  .cg-segs { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
+  .cg-segs button { font: inherit; font-size: var(--cds-font-size-caption); background: none; border: 0; padding: 4px 10px;
+    color: var(--color-fg-muted); cursor: pointer; }
+  .cg-segs button + button { border-left: 1px solid var(--color-border-line); }
+  .cg-segs button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+  .cg-ctl { display: inline-flex; gap: var(--cds-gap-xs); align-items: center; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .cg-ctl select, .cg-ctl input[type="search"] { font: inherit; color: var(--color-fg); background: var(--color-bg);
+    border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 3px 8px; }
+  .cg-ctl input[type="range"] { width: min(14rem, 50vw); accent-color: var(--color-fg); }
+  .cg-yr { font-variant-numeric: tabular-nums; color: var(--color-fg); font-weight: var(--cds-font-weight-medium); min-width: 2.6em; }
+  .cg-draw { min-height: 280px; }
+  .cg-draw svg { display: block; overflow: visible; }
+  .cg-grid { stroke: var(--cds-chart-grid); stroke-width: 1; }
+  .cg-axis { stroke: var(--cds-chart-axis); stroke-width: 1; }
+  .cg-ref { stroke: var(--cds-chart-reference); stroke-width: 1; stroke-dasharray: 4 3; }
+  .cg-break { stroke: var(--cds-chart-reference); stroke-width: 1; stroke-dasharray: 2 3; }
+  .cg-breaklab { fill: var(--color-fg-muted); font-size: 10.5px; }
+  .cg-tick { fill: var(--color-fg-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .cg-endlab { fill: var(--color-fg); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .cg-line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .cg-hover { stroke: var(--cds-chart-axis); stroke-width: 1; }
+  .cg-pt { stroke: var(--color-panel); stroke-width: 1.5; }
+  .cg-ptlab { fill: var(--color-fg); font-size: 11px; }
+  .cg-fit { stroke: var(--color-fg); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .cg-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-md); font-size: var(--cds-font-size-caption); }
+  .cg-leg { display: inline-flex; align-items: center; gap: 6px; font-size: var(--cds-font-size-caption); }
+  .cg-sw { width: 10px; height: 10px; border-radius: 2px; flex: none; display: inline-block; }
+  .cg-sw-lg { width: 14px; height: 14px; }
+  .cg-tip { position: absolute; z-index: 5; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border);
+    border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm);
+    font-size: var(--cds-font-size-caption); min-width: 10rem; max-width: 18rem; }
+  .cg-tip-head { color: var(--cds-text-secondary); margin-bottom: 2px; }
+  .cg-tip-row { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+  .cg-tip-row b { margin-left: auto; padding-left: var(--cds-pad-sm); font-weight: var(--cds-font-weight-medium); }
+  .cg-failed { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: inherit; height: 100%;
+    color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  .cg-dot { width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+  [data-dash-source-state=empty] { color: transparent; }
+  [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  .cg-mapwrap { display: grid; grid-template-columns: minmax(0, 23rem) minmax(0, 1fr); gap: var(--cds-gap-lg); align-items: start; }
+  @media (max-width: 720px) { .cg-mapwrap { grid-template-columns: minmax(0, 1fr); } }
+  .cg-mapbox { min-height: 420px; max-width: 23rem; width: 100%; }
+  .cg-mapbox svg { display: block; }
+  .cg-area { stroke: var(--color-panel); stroke-width: .6; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .cg-area:hover { stroke: var(--color-fg); stroke-width: 1.5; }
+  .cg-thin { stroke-width: .3; }
+  .cg-outline { fill: none; stroke: var(--color-fg); stroke-opacity: .55; stroke-width: .7; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .cg-zoombox { fill: none; stroke: var(--color-fg); stroke-width: 1; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .cg-side { display: flex; flex-direction: column; gap: var(--cds-gap-md); min-width: 0; }
+  .cg-legtitle { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .cg-maplegend { display: flex; flex-direction: column; gap: 6px; }
+  .cg-member { display: flex; flex-direction: column; gap: 2px; }
+  .cg-member-h { display: flex; align-items: center; gap: 6px; font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); }
+  .cg-member-b { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.5; }
+  .cg-tablebox { max-height: 26rem; overflow: auto; border-top: 1px solid var(--color-border-line); }
+  .cg table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); }
+  .cg th { position: sticky; top: 0; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium);
+    color: var(--color-fg-muted); padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .cg-sortable th { cursor: pointer; user-select: none; }
+  .cg-sortable th[aria-sort="ascending"]::after { content: " ↑"; }
+  .cg-sortable th[aria-sort="descending"]::after { content: " ↓"; }
+  .cg td { padding: 5px 8px; border-bottom: 1px solid var(--color-border-line); }
+  .cg .cg-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .cg-barcell { position: relative; min-width: 7rem; }
+  .cg-bar { position: absolute; right: 8px; top: 50%; height: 14px; transform: translateY(-50%); max-width: calc(100% - 16px);
+    background: color-mix(in srgb, var(--cds-chart-muted) 45%, transparent); border-radius: 3px; }
+  .cg-barcell span:last-child { position: relative; }
+  @media (max-width: 640px) { .cg-hide-narrow { display: none; } }
+</style>
+
+<div class="cg">
+  <div class="cg-head">
+    <div class="cg-eyebrow">ธนาคารพาณิชย์ · ยอดคงค้าง ณ ธ.ค. · ปี พ.ศ. 2548–2568</div>
+  </div>
+  <div class="cg-tabs" role="tablist">
+    <button class="cg-tab" role="tab" data-tab="q1" aria-selected="true" id="tab-q1">Q1 ความเหลื่อมล้ำ</button>
+    <button class="cg-tab" role="tab" data-tab="q2" aria-selected="false" id="tab-q2">Q2 การกระจุกตัวเชิงพื้นที่</button>
+  </div>
+
+  <!-- ============================== Q1 ============================== -->
+  <section class="cg-page" id="q1" aria-labelledby="tab-q1">
+    <p class="cg-takeaway" id="q1-takeaway">ความเหลื่อมล้ำของสินเชื่อต่อหัวระหว่างจังหวัดแทบไม่ลดลงในรอบ 20 ปี
+      (Gini <b data-source="ineq_year" data-field="gini_loan_pc" data-where="year_be=2548&amp;basis=dec&amp;scope=ex_bkk" data-fmt="d3">—</b> →
+      <b data-source="ineq_year" data-field="gini_loan_pc" data-where="year_be=2568&amp;basis=dec&amp;scope=ex_bkk" data-fmt="d3">—</b>)
+      จังหวัดที่ตามหลังหยุดไล่ตามทันหลังปี 2558 และตั้งแต่ปี 2563 เงินออมนอกกรุงเทพฯ ถูกนำไปปล่อยกู้ที่อื่นมากขึ้นเรื่อย ๆ</p>
+
+    <div class="cg-tiles" id="q1-tiles">
+      <div class="cg-tile" id="q1-t-gini">
+        <span class="cg-tile-k">Gini สินเชื่อต่อหัว 2568 (75 พื้นที่ ไม่รวม กทม.)</span>
+        <span class="cg-big" data-source="ineq_year" data-field="gini_loan_pc" data-where="year_be=2568&amp;basis=dec&amp;scope=ex_bkk" data-fmt="d3">—</span>
+        <span class="cg-sub">ปี 2548: <span data-source="ineq_year" data-field="gini_loan_pc" data-where="year_be=2548&amp;basis=dec&amp;scope=ex_bkk" data-fmt="d3">—</span> · 0 = เท่ากันทุกจังหวัด</span>
+      </div>
+      <div class="cg-tile" id="q1-t-beta">
+        <span class="cg-tile-k">β-convergence 2559–2568 (ลบ = จังหวัดที่ต่ำโตเร็วกว่า)</span>
+        <span class="cg-big" data-source="convergence" data-field="beta_slope" data-where="period=2559-2568" data-fmt="d2">—</span>
+        <span class="cg-sub">t = <span data-source="convergence" data-field="t" data-where="period=2559-2568" data-fmt="d1">—</span> · ช่วง 2548–2557: <span data-source="convergence" data-field="beta_slope" data-where="period=2548-2557" data-fmt="d2">—</span> (t = <span data-source="convergence" data-field="t" data-where="period=2548-2557" data-fmt="d1">—</span>)</span>
+      </div>
+      <div class="cg-tile" id="q1-t-surplus">
+        <span class="cg-tile-k">เงินฝากที่เกินสินเชื่อ นอก กทม. 2568 (บาท)</span>
+        <span class="cg-big" data-source="surplus" data-field="surplus_trillion" data-where="year_be=2568" data-fmt="tn">—</span>
+        <span class="cg-sub">ปี 2562: <span data-source="surplus" data-field="surplus_trillion" data-where="year_be=2562" data-fmt="tn">—</span> บาท</span>
+      </div>
+      <div class="cg-tile" id="q1-t-ldr">
+        <span class="cg-tile-k">พื้นที่ที่ LDR เกิน 100% ปี 2568</span>
+        <span class="cg-big" data-source="ineq_year" data-field="n_ldr_above_100" data-where="year_be=2568&amp;basis=dec&amp;scope=ex_bkk" data-fmt="int">—</span>
+        <span class="cg-sub">ปี 2557: <span data-source="ineq_year" data-field="n_ldr_above_100" data-where="year_be=2557&amp;basis=dec&amp;scope=ex_bkk" data-fmt="int">—</span> พื้นที่ · จาก 75 พื้นที่</span>
+      </div>
+    </div>
+
+    <div class="cg-grid2">
+      <div class="cg-card" id="q1-gini" data-source="ineq_year">
+        <h3>ความเหลื่อมล้ำของสินเชื่อแทบไม่ลด ส่วนเงินฝากเหลื่อมล้ำมากขึ้นตั้งแต่ 2564</h3>
+        <p class="cg-note">ค่า Gini ระหว่างพื้นที่ของสินเชื่อและเงินฝากต่อหัว · เส้นประแนวตั้ง = รอยต่อข้อมูล (การย้ายบันทึกสินเชื่อ ไม่ใช่เศรษฐกิจจริง)</p>
+        <div class="cg-controls">
+          <div class="cg-segs" id="q1-scope" role="group" aria-label="ขอบเขต"><button data-v="ex_bkk" aria-pressed="true">ไม่รวม กทม.</button><button data-v="all" aria-pressed="false">รวม กทม.</button></div>
+          <div class="cg-segs" id="q1-basis" role="group" aria-label="ค่ารายปี"><button data-v="dec" aria-pressed="true">ยอด ธ.ค.</button><button data-v="avg12" aria-pressed="false">เฉลี่ย 12 เดือน</button></div>
+        </div>
+        <div class="cg-draw" id="q1-gini-chart"></div>
+        <div class="cg-legend" hidden></div>
+        <ul class="cg-explain"><li><b>อ่านอย่างไร:</b> Gini วัดความไม่เท่ากันของค่าต่อหัวระหว่างพื้นที่ 0 = ทุกพื้นที่เท่ากัน ยิ่งใกล้ 1 ยิ่งกระจุกอยู่ไม่กี่ที่</li><li><b>สิ่งที่เห็น:</b> Gini สินเชื่อต่อหัวปี 2548 อยู่ที่ <span data-source="ineq_year" data-field="gini_loan_pc" data-where="year_be=2548&amp;basis=dec&amp;scope=ex_bkk" data-fmt="d3">—</span> และปี 2568 อยู่ที่ <span data-source="ineq_year" data-field="gini_loan_pc" data-where="year_be=2568&amp;basis=dec&amp;scope=ex_bkk" data-fmt="d3">—</span> แทบไม่เปลี่ยน ส่วนเงินฝากเหลื่อมล้ำมากขึ้นตั้งแต่ปี 2564</li><li><b>ความหมาย:</b> ผ่านไป 20 ปี ช่องว่างการเข้าถึงสินเชื่อยังอยู่ระดับเดิม และฐานเงินออมของแต่ละพื้นที่ห่างกันมากขึ้น</li><li><b>ข้อควรระวัง:</b> การขยับช่วงปี 2558 และ 2561 มาจากการย้ายบันทึกบัญชี ลองกด "เฉลี่ย 12 เดือน" ผลจะแทบไม่ต่างจากยอด ธ.ค.</li></ul>
+      </div>
+
+      <div class="cg-card" id="q1-region" data-source="region_flows">
+        <h3>ตั้งแต่ 2563 LDR ทุกภาคลดลง และปี 2568 ทุกภาคต่ำกว่า 100%</h3>
+        <p class="cg-note">LDR = สินเชื่อ ÷ เงินฝาก ต่ำกว่า 100% แปลว่าเงินออมของพื้นที่ถูกนำไปปล่อยกู้ที่อื่น · กรุงเทพฯ ไม่รวมสำนักงานใหญ่</p>
+        <div class="cg-controls">
+          <div class="cg-segs" id="q1-regmetric" role="group" aria-label="ตัวชี้วัด"><button data-v="ldr_dec" aria-pressed="true">LDR</button><button data-v="loan_pc_dec" aria-pressed="false">สินเชื่อต่อหัว</button><button data-v="dep_pc_dec" aria-pressed="false">เงินฝากต่อหัว</button></div>
+        </div>
+        <div class="cg-draw" id="q1-region-chart"></div>
+        <div class="cg-legend" hidden></div>
+        <ul class="cg-explain"><li><b>อ่านอย่างไร:</b> LDR = สินเชื่อ ÷ เงินฝาก เส้น 100% คือจุดที่สินเชื่อเท่ากับเงินฝาก ถ้าต่ำกว่าแปลว่าเงินออมของภาคถูกนำไปปล่อยกู้ที่อื่น</li><li><b>สิ่งที่เห็น:</b> ทุกภาคมี LDR ลดลงต่อเนื่องตั้งแต่ปี 2563 ในปี 2568 อีสานสูงสุด ส่วนกรุงเทพฯ (ไม่รวมสำนักงานใหญ่) ต่ำสุด</li><li><b>ความหมาย:</b> ธนาคารรับเงินฝากจากต่างจังหวัดเพิ่มขึ้น แต่ปล่อยกู้กลับไปในพื้นที่น้อยลง</li><li><b>ลองสลับ:</b> กด "เงินฝากต่อหัว" จะเห็นว่าอีสานมี LDR สูงเพราะเงินฝากต่อหัวต่ำ ไม่ใช่เพราะได้สินเชื่อมาก</li></ul>
+      </div>
+    </div>
+
+    <div class="cg-grid2">
+      <div class="cg-card" id="q1-scatter" data-source="prov_year">
+        <h3>LDR สูงไม่ได้แปลว่าเข้าถึงสินเชื่อได้มาก</h3>
+        <p class="cg-note">แต่ละจุดคือ 1 พื้นที่ (ไม่รวม กทม.) · อีสานมี LDR สูงเพราะเงินฝากน้อย แต่สินเชื่อต่อหัวยังอยู่กลุ่มล่าง</p>
+        <div class="cg-controls">
+          <label class="cg-ctl" for="q1-year">ปี <input type="range" id="q1-year" min="2548" max="2568" step="1" value="2568"> <output class="cg-yr" id="q1-year-out" for="q1-year">2568</output></label>
+          <label class="cg-ctl" for="q1-focus">เน้นภาค
+            <select id="q1-focus"><option value="ภาคตะวันออกเฉียงเหนือ">อีสาน</option><option value="ภาคเหนือ">เหนือ</option><option value="ภาคใต้">ใต้</option><option value="ภาคกลาง">กลาง</option></select></label>
+        </div>
+        <div class="cg-draw" id="q1-scatter-chart" style="min-height:340px"></div>
+        <ul class="cg-explain"><li><b>อ่านอย่างไร:</b> แกนนอนคือสินเชื่อต่อหัว (สเกล log) แกนตั้งคือ LDR จุดสีคือภาคที่เลือกในช่อง "เน้นภาค"</li><li><b>สิ่งที่เห็น:</b> จุดของอีสานอยู่ค่อนสูง (LDR สูง) แต่อยู่ทางซ้าย (สินเชื่อต่อหัวต่ำ)</li><li><b>ความหมาย:</b> ดู LDR อย่างเดียวบอกการเข้าถึงสินเชื่อไม่ได้ ต้องดูคู่กับค่าต่อหัวเสมอ</li><li><b>ลองเลื่อนปี:</b> เทียบปี 2557 กับ 2568 จะเห็นจุดเกือบทั้งหมดเลื่อนลงไปอยู่ใต้เส้น 100%</li></ul>
+        <p class="cg-note" id="q1-scatter-note"></p>
+      </div>
+
+      <div class="cg-card" id="q1-conv" data-source="conv_points conv_fit">
+        <h3>จังหวัดที่ตามหลังเคยไล่ตามทัน แต่หยุดหลังปี 2558</h3>
+        <p class="cg-note">β-convergence: แกนนอนคือสินเชื่อต่อหัวปีเริ่มต้น แกนตั้งคืออัตราเติบโตเฉลี่ยต่อปี เส้นลาดลงชัด = พื้นที่ที่เริ่มต่ำโตเร็วกว่า · จุดสีคืออีสาน</p>
+        <div class="cg-controls">
+          <div class="cg-segs" id="q1-period" role="group" aria-label="ช่วงเวลา"><button data-v="2548-2557" aria-pressed="true">2548–2557</button><button data-v="2559-2568" aria-pressed="false">2559–2568</button><button data-v="2548-2568" aria-pressed="false">2548–2568</button></div>
+        </div>
+        <div class="cg-draw" id="q1-conv-chart"></div>
+        <ul class="cg-explain"><li><b>อ่านอย่างไร:</b> แต่ละจุดคือ 1 พื้นที่ ถ้าเส้นประลาดลง แปลว่าพื้นที่ที่เริ่มต้นต่ำโตเร็วกว่าและกำลังไล่ตามทัน</li><li><b>สิ่งที่เห็น:</b> ช่วง 2548–2557 เส้นลาดลงชัด (β = <span data-source="convergence" data-field="beta_slope" data-where="period=2548-2557" data-fmt="d2">—</span>) แต่ช่วง 2559–2568 เกือบแบน (β = <span data-source="convergence" data-field="beta_slope" data-where="period=2559-2568" data-fmt="d2">—</span>)</li><li><b>ความหมาย:</b> การไล่ตามทันหยุดลงในทศวรรษหลัง และสินเชื่อต่อหัวของทุกพื้นที่โตช้าลงมาก</li><li><b>ข้อควรระวัง:</b> ช่วงเวลาเลือกไม่ให้คร่อมปี 2558 เพื่อเลี่ยงผลของรอยต่อข้อมูล</li></ul>
+      </div>
+    </div>
+
+    <div class="cg-card" id="q1-table-card">
+      <h3>ตัวชี้วัดรายพื้นที่ ปี <span id="q1-table-year">2568</span></h3>
+      <p class="cg-note">ปีตามแถบเลื่อนด้านบน · กดหัวคอลัมน์เพื่อเรียง · แถบในช่องสินเชื่อต่อหัวใช้สเกลเดียวกัน (ไม่รวม กทม.)</p>
+      <ul class="cg-explain"><li><b>ใช้ทำอะไร:</b> ดูตัวเลขรายพื้นที่ของปีที่เลือกจากแถบเลื่อนในกราฟด้านบน</li><li><b>ลองเรียง:</b> กดหัวคอลัมน์ LDR เพื่อหาพื้นที่ที่เงินออมไหลออกมากที่สุด หรือกดสินเชื่อต่อหัวเพื่อดูพื้นที่ที่เข้าถึงน้อยที่สุด</li><li><b>สาขา / แสนคน:</b> บอกการเข้าถึงทางกายภาพ จะใช้เป็นตัวแปรอธิบายใน Q3</li><li><b>ข้อควรระวัง:</b> ค่ากรุงเทพฯ ไม่รวมสำนักงานใหญ่ และสินเชื่อนับตามที่ตั้งสาขา ไม่ใช่ที่อยู่ของผู้กู้</li></ul>
+      <div class="cg-controls"><label class="cg-ctl" for="q1-search">ค้นหา <input type="search" id="q1-search" placeholder="ชื่อจังหวัดหรือภาค"></label></div>
+      <div class="cg-tablebox">
+        <table id="q1-table" class="cg-sortable" data-source="prov_year" data-row-key="key">
+          <thead><tr>
+            <th data-field="prov_name_th" tabindex="0">พื้นที่</th>
+            <th data-field="region_bot" class="cg-hide-narrow" tabindex="0">ภาค</th>
+            <th data-field="loan_pc_dec" class="cg-num" tabindex="0">สินเชื่อต่อหัว (บาท)</th>
+            <th data-field="dep_pc_dec" class="cg-num cg-hide-narrow" tabindex="0">เงินฝากต่อหัว (บาท)</th>
+            <th data-field="ldr_dec" class="cg-num" tabindex="0">LDR (%)</th>
+            <th data-field="offices_per_100k" class="cg-num cg-hide-narrow" tabindex="0">สาขา / แสนคน</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== Q2 ============================== -->
+  <section class="cg-page" id="q2" aria-labelledby="tab-q2" hidden>
+    <p class="cg-takeaway" id="q2-takeaway">ทุกตัวชี้วัดเกาะกลุ่มตามพื้นที่อย่างมีนัยสำคัญ กลุ่มจังหวัดสินเชื่อต่ำในอีสานหดจาก
+      <b data-source="lisa_counts" data-field="n" data-where="year_be=2548&amp;variable=log_loan_pc&amp;cluster=LL" data-fmt="int">—</b> เหลือ
+      <b data-source="lisa_counts" data-field="n" data-where="year_be=2568&amp;variable=log_loan_pc&amp;cluster=LL" data-fmt="int">—</b> จังหวัด
+      แต่ระดับอำเภอ สินเชื่อกระจุกที่อำเภอเมือง และกลุ่มอำเภอสินเชื่อต่ำครอบคลุมประชากร
+      <b data-source="dist_summary" data-field="pop_share" data-where="variable=log_loan_pc&amp;cluster=LL" data-fmt="share">—</b> ของประเทศ</p>
+
+    <div class="cg-tiles" id="q2-tiles">
+      <div class="cg-tile" id="q2-t-moran">
+        <span class="cg-tile-k">Moran's I สินเชื่อต่อหัว 2568</span>
+        <span class="cg-big" data-source="moran_year" data-field="moran_I" data-where="year_be=2568&amp;variable=log_loan_pc&amp;scope=all&amp;weights=queen" data-fmt="d2">—</span>
+        <span class="cg-sub">ปี 2548: <span data-source="moran_year" data-field="moran_I" data-where="year_be=2548&amp;variable=log_loan_pc&amp;scope=all&amp;weights=queen" data-fmt="d2">—</span> · 0 = กระจายแบบสุ่ม</span>
+      </div>
+      <div class="cg-tile" id="q2-t-ll">
+        <span class="cg-tile-k">จังหวัดเงินฝากต่ำ ล้อมรอบด้วยต่ำ 2568</span>
+        <span class="cg-big" data-source="lisa_counts" data-field="n" data-where="year_be=2568&amp;variable=log_dep_pc&amp;cluster=LL" data-fmt="int">—</span>
+        <span class="cg-sub">สินเชื่อต่อหัว: <span data-source="lisa_counts" data-field="n" data-where="year_be=2568&amp;variable=log_loan_pc&amp;cluster=LL" data-fmt="int">—</span> จังหวัด (2548: <span data-source="lisa_counts" data-field="n" data-where="year_be=2548&amp;variable=log_loan_pc&amp;cluster=LL" data-fmt="int">—</span>)</span>
+      </div>
+      <div class="cg-tile" id="q2-t-pop">
+        <span class="cg-tile-k">ประชากรในกลุ่มอำเภอสินเชื่อต่ำ 2568</span>
+        <span class="cg-big" data-source="dist_summary" data-field="pop_share" data-where="variable=log_loan_pc&amp;cluster=LL" data-fmt="share">—</span>
+        <span class="cg-sub"><span data-source="dist_summary" data-field="units" data-where="variable=log_loan_pc&amp;cluster=LL" data-fmt="int">—</span> หน่วย จากทั้งหมด 318</span>
+      </div>
+      <div class="cg-tile" id="q2-t-hub">
+        <span class="cg-tile-k">"เกาะสินเชื่อ" ที่เป็นอำเภอเมือง</span>
+        <span class="cg-big" data-source="dist_summary" data-field="muang" data-where="variable=log_loan_pc&amp;cluster=HL" data-fmt="int">—</span>
+        <span class="cg-sub">จาก <span data-source="dist_summary" data-field="units" data-where="variable=log_loan_pc&amp;cluster=HL" data-fmt="int">—</span> หน่วยที่สินเชื่อสูงแต่รอบข้างต่ำ</span>
+      </div>
+    </div>
+
+    <div class="cg-card" id="q2-moran" data-source="moran_year">
+      <h3>เงินฝากเกาะกลุ่มชัดที่สุด ส่วนสินเชื่อต่อหัวเกาะกลุ่มน้อยลงช่วง 2548–2556 แล้วทรงตัว</h3>
+      <p class="cg-note">Global Moran's I (0 = กระจายแบบสุ่ม ยิ่งสูงยิ่งเกาะกลุ่ม) · ทุกปี p &lt; 0.01 · 9,999 permutations</p>
+      <div class="cg-controls">
+        <div class="cg-segs" id="q2-scope" role="group" aria-label="ขอบเขต"><button data-v="all" aria-pressed="true">รวม กทม.</button><button data-v="ex_bkk" aria-pressed="false">ไม่รวม กทม.</button></div>
+        <div class="cg-segs" id="q2-weights" role="group" aria-label="นิยามเพื่อนบ้าน"><button data-v="queen" aria-pressed="true">เขตแดนติดกัน</button><button data-v="knn6" aria-pressed="false">6 จังหวัดใกล้สุด</button></div>
+      </div>
+      <div class="cg-draw" id="q2-moran-chart"></div>
+      <div class="cg-legend" hidden></div>
+        <ul class="cg-explain"><li><b>อ่านอย่างไร:</b> Moran's I วัดว่าจังหวัดที่อยู่ติดกันมีค่าคล้ายกันแค่ไหน 0 = กระจายแบบสุ่ม ยิ่งสูงยิ่งเกาะกลุ่ม</li><li><b>สิ่งที่เห็น:</b> เงินฝากต่อหัวเกาะกลุ่มสูงสุดและเกือบคงที่ สินเชื่อต่อหัวลดลงช่วงแรกแล้วทรงตัว ส่วน LDR ขึ้นลงมาก</li><li><b>ความหมาย:</b> ปัญหาเงินออมน้อยเป็นเรื่องของทั้งผืนพื้นที่ ส่วนช่องว่างสินเชื่อกลายเป็นเรื่องรายจังหวัดมากขึ้น</li><li><b>ลองสลับ:</b> ไม่รวม กทม. หรือใช้ 6 จังหวัดใกล้สุดเป็นเพื่อนบ้าน แนวโน้มยังเหมือนเดิม แปลว่าผลไม่ขึ้นกับนิยาม</li></ul>
+    </div>
+
+    <div class="cg-card" id="q2-map" data-source="geo_prov prov_year lisa_prov">
+      <h3>แผนที่รายจังหวัด: ค่าของแต่ละจังหวัด หรือกลุ่ม LISA</h3>
+      <p class="cg-note">LISA บอกว่าจังหวัดไหนอยู่ในกลุ่ม "สูง-สูง" หรือ "ต่ำ-ต่ำ" ที่มีนัยสำคัญ (p &lt; 0.05) · เพื่อนบ้าน = เขตแดนติดกัน · บึงกาฬรวมกับหนองคาย · ชี้ที่จังหวัดเพื่อดูค่า</p>
+      <div class="cg-controls">
+        <div class="cg-segs" id="q2-metric" role="group" aria-label="ตัวชี้วัด"><button data-v="loan" aria-pressed="true">สินเชื่อต่อหัว</button><button data-v="dep" aria-pressed="false">เงินฝากต่อหัว</button><button data-v="ldr" aria-pressed="false">LDR</button></div>
+        <div class="cg-segs" id="q2-view" role="group" aria-label="มุมมอง"><button data-v="lisa" aria-pressed="true">กลุ่ม LISA</button><button data-v="value" aria-pressed="false">ค่า</button></div>
+        <label class="cg-ctl" for="q2-year">ปี <input type="range" id="q2-year" min="2548" max="2568" step="1" value="2568"> <output class="cg-yr" id="q2-year-out" for="q2-year">2568</output></label>
+      </div>
+      <div class="cg-mapwrap">
+        <div class="cg-mapbox" id="q2-map-svg"></div>
+        <div class="cg-side">
+          <div class="cg-legtitle"></div>
+          <div class="cg-maplegend"></div>
+          <div class="cg-legtitle">สมาชิกของแต่ละกลุ่ม</div>
+          <div id="q2-members" class="cg-maplegend"></div>
+        </div>
+      </div>
+      <ul class="cg-explain"><li><b>อ่านอย่างไร:</b> มุมมอง "กลุ่ม LISA" แสดงจังหวัดที่ตัวเองและเพื่อนบ้านสูงหรือต่ำพร้อมกันอย่างมีนัยสำคัญ มุมมอง "ค่า" แสดงค่าจริงของแต่ละจังหวัด</li><li><b>สิ่งที่เห็น:</b> กรุงเทพฯ และปริมณฑลเป็นกลุ่มสูง-สูงของสินเชื่อต่อหัวทุกปี ส่วนกลุ่มต่ำ-ต่ำในอีสานหดลงเมื่อเลื่อนปีจาก 2548 ไป 2568</li><li><b>ลองสลับ:</b> กด "เงินฝากต่อหัว" อีสานยังเป็นผืนสีแดงเกือบทั้งภาค และถ้ากด "LDR" อีสานกลายเป็นกลุ่มสูง-สูง</li><li><b>ข้อควรระวัง:</b> LISA ทดสอบทุกจังหวัดพร้อมกัน กลุ่มสินเชื่อต่อหัวระดับจังหวัดจึงเป็นสัญญาณอ่อน ส่วนกลุ่มเงินฝากและ LDR ชัดกว่า</li></ul>
+    </div>
+
+    <div class="cg-card" id="q2-dist" data-source="geo_dist geo_prov lisa_dist dist_summary">
+      <h3>ระดับอำเภอ: สินเชื่อกระจุกที่อำเภอเมือง ส่วนอำเภอรอบนอกเป็นกลุ่มสินเชื่อต่ำผืนใหญ่</h3>
+      <p class="cg-note">หน่วยวิเคราะห์ = อำเภอที่ ธปท. เปิดเผย (มีธนาคารพาณิชย์มากกว่า 4 แห่ง) + "อำเภออื่น ๆ" ของแต่ละจังหวัดรวมเป็น 1 หน่วย · 999 permutations · พื้นที่ว่าง = ไม่มีสินเชื่อ</p>
+      <div class="cg-controls">
+        <div class="cg-segs" id="q2-dvar" role="group" aria-label="ตัวชี้วัด"><button data-v="loan" aria-pressed="true">สินเชื่อต่อหัว</button><button data-v="dep" aria-pressed="false">เงินฝากต่อหัว</button><button data-v="ldr" aria-pressed="false">LDR</button></div>
+        <div class="cg-segs" id="q2-zoom" role="group" aria-label="ขอบเขตแผนที่"><button data-v="all" aria-pressed="true">ทั้งประเทศ</button><button data-v="bkk" aria-pressed="false">กรุงเทพฯ และปริมณฑล</button></div>
+      </div>
+      <div class="cg-mapwrap">
+        <div class="cg-mapbox" id="q2-dist-svg"></div>
+        <div class="cg-side">
+          <div class="cg-legtitle"></div>
+          <div class="cg-maplegend"></div>
+          <div class="cg-legtitle" id="q2-hubs-note"></div>
+          <div class="cg-tablebox">
+            <table id="q2-hubs" data-source="lisa_dist" data-row-key="key">
+              <thead><tr><th data-field="amphoe_name">อำเภอ</th><th data-field="prov_name_th">จังหวัด</th><th data-field="real_value" class="cg-num">สินเชื่อต่อหัว</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <ul class="cg-explain"><li><b>อ่านอย่างไร:</b> หน่วยคืออำเภอที่ ธปท. เปิดเผย ส่วนอำเภอที่ถูกซ่อนรวมเป็น "อำเภออื่น ๆ" 1 หน่วยต่อจังหวัด สีบอกกลุ่ม LISA</li><li><b>สิ่งที่เห็น:</b> จุดสีฟ้าอ่อนที่กระจายอยู่ทั่วประเทศส่วนใหญ่เป็นอำเภอเมือง ซึ่งสินเชื่อสูงแต่อำเภอรอบข้างต่ำ (hub-and-spoke)</li><li><b>ความหมาย:</b> ช่องว่างที่ใหญ่ที่สุดอยู่ระหว่างอำเภอเมืองกับอำเภอรอบนอกในจังหวัดเดียวกัน มากกว่าระหว่างภาค</li><li><b>ข้อควรระวัง:</b> สินเชื่อนับตามที่ตั้งสาขา ผู้กู้จากรอบนอกที่มากู้ในตัวเมืองจึงถูกนับเป็นของอำเภอเมือง</li></ul>
+    </div>
+  </section>
+
+  <p class="cg-note" id="cg-foot">ที่มา: ธนาคารแห่งประเทศไทย (cb_t3T-district, FI_CB_011), กรมการปกครอง (ประชากรตามทะเบียน 31 ธ.ค.), OCHA/HDX (ขอบเขตการปกครอง) · คำนวณโดยผู้จัดทำ ·
+    เฉพาะธนาคารพาณิชย์ ไม่รวม ธ.ก.ส. ออมสิน และสหกรณ์ · สินเชื่อบันทึกตามที่ตั้งสาขา · รายละเอียดวิธีการอยู่ใน README และ reports/q1_findings.md, q2_findings.md</p>
+</div>
+<script src="common.js"></script>
+<script src="q1.js"></script>
+<script src="q2.js"></script>
