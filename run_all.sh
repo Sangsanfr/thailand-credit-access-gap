@@ -28,5 +28,5 @@ python src/q1_charts.py outputs/q1 processed/panels outputs/q1/fig
 python src/q2_spatial.py "$RAW"/D7/shp processed/panels outputs/q2 processed/geo
 python src/q2_maps.py outputs/q2 processed/panels processed/geo outputs/q2/fig
 
-# 5) JSON data for the dashboard
+# 5) Data file for the dashboard (dashboard/data/data.js)
 python src/dash_data.py . processed/geo/_adm2_cache.pkl "$RAW"/D7/shp dashboard/data

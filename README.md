@@ -4,6 +4,14 @@
 
 **TL;DR (English):** Using 21 years of Bank of Thailand province- and district-level deposit and loan data, this project finds that the gap in commercial-bank credit per capita across Thai provinces has not narrowed in 20 years (Gini 0.436 → 0.423), lagging provinces stopped catching up after 2014, and since 2020 the deposits outside Bangkok that are not lent back locally have grown from 0.85 to 2.25 trillion baht. The largest gap is within provinces — between the provincial capital district and its surrounding districts — rather than between regions.
 
+### [เปิด Interactive Dashboard](https://sangsanfr.github.io/thailand-credit-access-gap/dashboard/)
+
+รวมกราฟและแผนที่ของ Q1 และ Q2 ไว้ในหน้าเดียว เลือกปี ตัวชี้วัด และขอบเขตได้ ชี้ที่เส้น จุด หรือจังหวัดเพื่อดูค่า และค้นหาหรือเรียงตารางรายจังหวัดได้ (ถ้าลิงก์ยังไม่ขึ้น ดาวน์โหลด repo แล้วดับเบิลคลิก `dashboard/index.html` ได้เลย)
+
+| Q1 ความเหลื่อมล้ำ | Q2 การกระจุกตัวเชิงพื้นที่ |
+|---|---|
+| [![Dashboard Q1](dashboard/preview_q1.png)](https://sangsanfr.github.io/thailand-credit-access-gap/dashboard/) | [![Dashboard Q2](dashboard/preview_q2.png)](https://sangsanfr.github.io/thailand-credit-access-gap/dashboard/#q2) |
+
 ---
 
 ## สรุปผลการวิเคราะห์
@@ -61,8 +69,6 @@
 |---|---|
 | ![Moran's I trend](outputs/q2/fig/q2_c4_moran_trend.png) | ![Choropleth 2568](outputs/q2/fig/q2_m1_choropleth_2568.png) |
 | ![LISA province](outputs/q2/fig/q2_m2_lisa_province.png) | ![LISA district](outputs/q2/fig/q2_m3_lisa_district_2568.png) |
-
-**Interactive dashboard:** รวมกราฟและแผนที่ของ Q1 และ Q2 ไว้ในหน้าเดียว ซอร์สโค้ดอยู่ใน [`dashboard/`](dashboard/) (ดูข้อควรรู้ใน [`dashboard/README.md`](dashboard/README.md))
 
 ---
 
@@ -199,7 +205,7 @@ thailand-credit-access-gap/
 ├── outputs/
 │   ├── q1/  (csv + fig/)     Gini, Theil, convergence, LDR รายภาค
 │   └── q2/  (csv + fig/)     Moran's I, LISA จังหวัด/อำเภอ, แผนที่
-├── dashboard/                ซอร์สโค้ด dashboard (index.html, common.js, q1.js, q2.js)
+├── dashboard/                interactive dashboard (เปิด index.html ได้เลย ไม่ต้องติดตั้งอะไร)
 ├── reports/                  q1_findings.md, q2_findings.md
 └── src/                      สคริปต์ทั้งหมด
 ```
@@ -224,7 +230,7 @@ bash run_all.sh
 | 2 | `build_panels.py` | `processed/panels/` |
 | 3 | `q1_inequality.py`, `q1_charts.py` | `outputs/q1/` |
 | 4 | `q2_spatial.py`, `q2_maps.py` | `outputs/q2/`, `processed/geo/` (รอบแรกราว 3–4 นาที) |
-| 5 | `dash_data.py` | `dashboard/data/*.json` |
+| 5 | `dash_data.py` | `dashboard/data/data.js` |
 
 `src/parse_bot.py` คือ parser กลางสำหรับไฟล์ ธปท. แปลงเดือนแบบไทย เช่น `ม.ค.48` และ `Q1/2556` และจัดการ `-` / `n.a.`
 

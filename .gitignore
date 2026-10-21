@@ -6,7 +6,6 @@ data/raw/D7/shp/
 d2_xlsx/
 processed/district_monthly_D2_D1.csv
 processed/geo/_adm2_cache.pkl
-dashboard/data/
 
 # Python / OS
 __pycache__/

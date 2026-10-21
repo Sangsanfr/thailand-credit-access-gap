@@ -1,3 +1,25 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ช่องว่างสินเชื่อรายพื้นที่</title>
+<meta name="description" content="Interactive dashboard: ความเหลื่อมล้ำการเข้าถึงสินเชื่อธนาคารพาณิชย์รายจังหวัดและรายอำเภอ ปี 2548–2568 จากข้อมูล ธปท.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500&family=Noto+Serif+Thai:wght@400&display=swap">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<main class="site">
+<header class="site-head">
+  <div>
+    <h1>ช่องว่างสินเชื่อรายพื้นที่</h1>
+    <p>ความเหลื่อมล้ำการเข้าถึงสินเชื่อธนาคารพาณิชย์ รายจังหวัดและรายอำเภอ จากข้อมูลธนาคารแห่งประเทศไทย</p>
+  </div>
+  <a class="site-link" href="https://github.com/Sangsanfr/thailand-credit-access-gap">โค้ดและข้อมูลบน GitHub ↗</a>
+</header>
+<div id="dash-root">
 <style>
   .cg { font-family: var(--font-anthropic-sans); display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
   .cg-head { display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
@@ -297,6 +319,13 @@
   <p class="cg-note" id="cg-foot">ที่มา: ธนาคารแห่งประเทศไทย (cb_t3T-district, FI_CB_011), กรมการปกครอง (ประชากรตามทะเบียน 31 ธ.ค.), OCHA/HDX (ขอบเขตการปกครอง) · คำนวณโดยผู้จัดทำ ·
     เฉพาะธนาคารพาณิชย์ ไม่รวม ธ.ก.ส. ออมสิน และสหกรณ์ · สินเชื่อบันทึกตามที่ตั้งสาขา · รายละเอียดวิธีการอยู่ใน README และ reports/q1_findings.md, q2_findings.md</p>
 </div>
+</div>
+</main>
+<script src="lib/d3.v7.9.0.min.js"></script>
+<script src="data/data.js"></script>
+<script src="runtime.js"></script>
 <script src="common.js"></script>
 <script src="q1.js"></script>
 <script src="q2.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+/* Design tokens the dashboard styles refer to, in light and dark. */
+:root {
+  color-scheme: light dark;
+  --font-anthropic-sans: "IBM Plex Sans Thai", "Leelawadee UI", "Noto Sans Thai", Tahoma, system-ui, sans-serif;
+  --font-anthropic-serif: "Noto Serif Thai", "Leelawadee UI", Georgia, serif;
+
+  --color-bg: #f6f5f2;
+  --color-panel: #ffffff;
+  --color-fg: #1f1e1c;
+  --color-fg-muted: #66645e;
+  --color-border-line: #e2e0d9;
+  --color-ok: #2e7d4f;
+  --color-warn: #b7791f;
+  --color-bad: #c93837;
+
+  --series-1: #2f6fd0; --series-2: #d9822b; --series-3: #2e9e6a; --series-4: #c2457a;
+  --series-5: #7a5cc7; --series-6: #8a7b5a; --series-7: #3aa6b9; --series-8: #b0413e;
+
+  --cds-chart-grid: #ecebe6;
+  --cds-chart-axis: #b9b7af;
+  --cds-chart-reference: #8d8b84;
+  --cds-chart-muted: #b4b2a9;
+  --cds-surface-popover: #ffffff;
+  --cds-border: #dcdad3;
+  --cds-text-secondary: #66645e;
+  --cds-shadow-popover: 0 6px 20px rgba(20, 20, 18, .12);
+
+  --cds-font-size-caption: 12.5px;
+  --cds-font-size-body: 14px;
+  --cds-font-size-heading: 16px;
+  --cds-font-size-title: 30px;
+  --cds-font-weight-medium: 500;
+  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 12px; --cds-gap-lg: 20px;
+  --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-md: 12px; --cds-pad-lg: 16px;
+  --cds-radius: 8px;
+  --cds-dur-slow: 300ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #191918;
+    --color-panel: #222220;
+    --color-fg: #ecebe6;
+    --color-fg-muted: #a3a199;
+    --color-border-line: #383733;
+    --color-ok: #5bb382;
+    --color-warn: #e0a84a;
+    --color-bad: #e06463;
+
+    --series-1: #6b9ff0; --series-2: #eda25b; --series-3: #5cc493; --series-4: #e27aa6;
+    --series-5: #a58ce6; --series-6: #b7a782; --series-7: #6cc8d8; --series-8: #e0716d;
+
+    --cds-chart-grid: #2e2d2a;
+    --cds-chart-axis: #57554f;
+    --cds-chart-reference: #8a8880;
+    --cds-chart-muted: #66645e;
+    --cds-surface-popover: #2a2a27;
+    --cds-border: #44433e;
+    --cds-text-secondary: #a3a199;
+    --cds-shadow-popover: 0 6px 20px rgba(0, 0, 0, .45);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-anthropic-sans);
+  font-size: var(--cds-font-size-body);
+  line-height: 1.5;
+}
+.site { max-width: 1180px; margin: 0 auto; padding: 28px 16px 40px; display: flex; flex-direction: column; gap: 20px; }
+.site-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; }
+.site-head h1 { margin: 0; font-size: 26px; font-weight: 500; line-height: 1.3; }
+.site-head p { margin: 4px 0 0; color: var(--color-fg-muted); font-size: 13.5px; }
+.site-link { color: var(--color-fg); font-size: 13.5px; text-decoration: none; border: 1px solid var(--color-border-line);
+  border-radius: var(--cds-radius); padding: 6px 12px; background: var(--color-panel); white-space: nowrap; }
+.site-link:hover { border-color: var(--color-fg-muted); }
+.site-link:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+
+/* loading placeholder the dashboard code toggles */
+.dash-skeleton { color: transparent !important; background: color-mix(in srgb, var(--color-fg) 6%, transparent); border-radius: 4px; }
+
+/* the dashboard shows and hides tabs and tooltips with the hidden attribute */
+[hidden] { display: none !important; }
